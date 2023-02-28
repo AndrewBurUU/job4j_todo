@@ -1,26 +1,31 @@
 package ru.job4j.todo.repository;
 
 import org.hibernate.*;
-import org.hibernate.boot.MetadataSources;
-import org.hibernate.boot.registry.StandardServiceRegistry;
-import org.hibernate.boot.registry.StandardServiceRegistryBuilder;
 
 import org.springframework.stereotype.*;
 import ru.job4j.todo.model.*;
+import ru.job4j.todo.repository.store.*;
 
 import java.util.*;
 
 @Repository
-public class HbmRepository implements TaskRepository, AutoCloseable {
+public class HbmRepository implements TaskRepository {
 
+/**
     private final StandardServiceRegistry registry = new StandardServiceRegistryBuilder()
             .configure().build();
     private final SessionFactory sf = new MetadataSources(registry)
             .buildMetadata().buildSessionFactory();
+*/
+    private final TaskStore taskStore;
+
+    public HbmRepository(TaskStore taskStore) {
+        this.taskStore = taskStore;
+    }
 
     @Override
     public Task save(Task task) {
-        Session session = sf.openSession();
+        Session session = taskStore.getSf().openSession();
         try {
             session.beginTransaction();
             session.save(task);
@@ -34,7 +39,7 @@ public class HbmRepository implements TaskRepository, AutoCloseable {
 
     @Override
     public boolean deleteById(int id) {
-        Session session = sf.openSession();
+        Session session = taskStore.getSf().openSession();
         int count = 0;
         try {
             session.beginTransaction();
@@ -51,7 +56,7 @@ public class HbmRepository implements TaskRepository, AutoCloseable {
 
     @Override
     public boolean update(Task task) {
-        Session session = sf.openSession();
+        Session session = taskStore.getSf().openSession();
         int count = 0;
         try {
             session.beginTransaction();
@@ -62,6 +67,7 @@ public class HbmRepository implements TaskRepository, AutoCloseable {
                             + "WHERE id = :fId")
                     .setParameter("fDescription", task.getDescription())
                     .setParameter("fCreated", task.getCreated())
+                    .setParameter("fDone", task.isDone())
                     .setParameter("fId", task.getId())
                     .executeUpdate();
             session.getTransaction().commit();
@@ -74,7 +80,7 @@ public class HbmRepository implements TaskRepository, AutoCloseable {
 
     @Override
     public Optional<Task> findById(int id) {
-        Session session = sf.openSession();
+        Session session = taskStore.getSf().openSession();
         Optional<Task> task = session.createQuery("from Task where id = :fId", Task.class)
                 .setParameter("fId", id)
                 .uniqueResultOptional();
@@ -84,7 +90,7 @@ public class HbmRepository implements TaskRepository, AutoCloseable {
 
     @Override
     public Collection<Task> findAll() {
-        Session session = sf.openSession();
+        Session session = taskStore.getSf().openSession();
         List<Task> res = session.createQuery("from Task", Task.class).list();
         session.close();
         return res;
@@ -92,22 +98,18 @@ public class HbmRepository implements TaskRepository, AutoCloseable {
 
     @Override
     public Collection<Task> findNew() {
-        Session session = sf.openSession();
-        List<Task> res = session.createQuery("from Task where created::date = CURRENT_DATE", Task.class).list();
+        Session session = taskStore.getSf().openSession();
+        List<Task> res = session.createQuery("from Task where created >= CURRENT_DATE", Task.class).list();
         session.close();
         return res;
     }
 
     @Override
     public Collection<Task> findByDone() {
-        Session session = sf.openSession();
+        Session session = taskStore.getSf().openSession();
         List<Task> res = session.createQuery("from Task where done = true", Task.class).list();
         session.close();
         return res;
     }
 
-    @Override
-    public void close() {
-        StandardServiceRegistryBuilder.destroy(registry);
-    }
 }

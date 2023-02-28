@@ -17,4 +17,6 @@ public class Task {
     private String description;
 
     private LocalDateTime created = LocalDateTime.now();
+
+    private boolean done;
 }

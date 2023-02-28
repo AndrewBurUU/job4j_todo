@@ -37,6 +37,7 @@ public class HbmTaskService implements TaskService {
 
     @Override
     public Collection<Task> findAll() {
+
         return taskRepository.findAll();
     }
 
@@ -48,5 +49,14 @@ public class HbmTaskService implements TaskService {
     @Override
     public Collection<Task> findByDone() {
         return taskRepository.findByDone();
+    }
+
+    @Override
+    public boolean doneById(int id) {
+        var taskOptional = taskRepository.findById(id);
+        if (taskOptional.isEmpty())
+            return false;
+        taskOptional.get().setDone(true);
+        return taskRepository.update(taskOptional.get());
     }
 }

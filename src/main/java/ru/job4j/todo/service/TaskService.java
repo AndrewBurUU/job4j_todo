@@ -20,4 +20,6 @@ public interface TaskService {
 
     Collection<Task> findByDone();
 
+    boolean doneById(int id);
+
 }
