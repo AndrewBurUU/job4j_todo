@@ -7,6 +7,7 @@ import java.time.*;
 @Entity
 @Table(name = "tasks")
 @Data
+@AllArgsConstructor
 @NoArgsConstructor
 public class Task {
 

@@ -37,7 +37,6 @@ public class HbmTaskService implements TaskService {
 
     @Override
     public Collection<Task> findAll() {
-
         return taskRepository.findAll();
     }
 
