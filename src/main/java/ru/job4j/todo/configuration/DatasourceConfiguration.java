@@ -6,8 +6,6 @@ import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 
 import javax.sql.DataSource;
-import java.sql.Timestamp;
-import java.time.LocalDateTime;
 
 @Configuration
 public class DatasourceConfiguration {
@@ -24,37 +22,4 @@ public class DatasourceConfiguration {
             }
         };
     }
-
-/**
-    @Bean
-    public Sql2o databaseClient(DataSource dataSource) {
-        return new Sql2o(dataSource, createConverters());
-    }
-
-    private Quirks createConverters() {
-        return new NoQuirks() {
-            {
-                converters.put(LocalDateTime.class, new Converter<LocalDateTime>() {
-
-                    @Override
-                    public LocalDateTime convert(Object value) throws ConverterException {
-                        if (value == null) {
-                            return null;
-                        }
-                        if (!(value instanceof Timestamp)) {
-                            throw new ConverterException("Invalid value to convert");
-                        }
-                        return ((Timestamp) value).toLocalDateTime();
-                    }
-
-                    @Override
-                    public Object toDatabaseParam(LocalDateTime value) {
-                        return value == null ? null : Timestamp.valueOf(value);
-                    }
-
-                });
-            }
-        };
-    }
-*/
 }
