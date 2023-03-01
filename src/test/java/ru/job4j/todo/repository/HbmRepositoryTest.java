@@ -28,7 +28,7 @@ public class HbmRepositoryTest {
         SessionFactory sf = new MetadataSources(registry)
                 .buildMetadata().buildSessionFactory();
 
-        hbmRepository = new HbmRepository(new TaskStore(sf));
+        hbmRepository = new HbmRepository(sf);
     }
 
     @AfterEach

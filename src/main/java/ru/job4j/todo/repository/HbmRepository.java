@@ -17,15 +17,15 @@ public class HbmRepository implements TaskRepository {
     private final SessionFactory sf = new MetadataSources(registry)
             .buildMetadata().buildSessionFactory();
 */
-    private final TaskStore taskStore;
+    private final SessionFactory sf;
 
-    public HbmRepository(TaskStore taskStore) {
-        this.taskStore = taskStore;
+    public HbmRepository(SessionFactory sf) {
+        this.sf = sf;
     }
 
     @Override
     public Task save(Task task) {
-        Session session = taskStore.getSf().openSession();
+        Session session = sf.openSession();
         try {
             session.beginTransaction();
             session.save(task);
@@ -39,7 +39,7 @@ public class HbmRepository implements TaskRepository {
 
     @Override
     public boolean deleteById(int id) {
-        Session session = taskStore.getSf().openSession();
+        Session session = sf.openSession();
         int count = 0;
         try {
             session.beginTransaction();
@@ -56,7 +56,7 @@ public class HbmRepository implements TaskRepository {
 
     @Override
     public boolean update(Task task) {
-        Session session = taskStore.getSf().openSession();
+        Session session = sf.openSession();
         int count = 0;
         try {
             session.beginTransaction();
@@ -80,7 +80,7 @@ public class HbmRepository implements TaskRepository {
 
     @Override
     public Optional<Task> findById(int id) {
-        Session session = taskStore.getSf().openSession();
+        Session session = sf.openSession();
         Optional<Task> task = session.createQuery("from Task where id = :fId", Task.class)
                 .setParameter("fId", id)
                 .uniqueResultOptional();
@@ -90,7 +90,7 @@ public class HbmRepository implements TaskRepository {
 
     @Override
     public Collection<Task> findAll() {
-        Session session = taskStore.getSf().openSession();
+        Session session = sf.openSession();
         List<Task> res = session.createQuery("from Task", Task.class).list();
         session.close();
         return res;
@@ -98,7 +98,7 @@ public class HbmRepository implements TaskRepository {
 
     @Override
     public Collection<Task> findNew() {
-        Session session = taskStore.getSf().openSession();
+        Session session = sf.openSession();
         List<Task> res = session.createQuery("from Task where created >= CURRENT_DATE", Task.class).list();
         session.close();
         return res;
@@ -106,7 +106,7 @@ public class HbmRepository implements TaskRepository {
 
     @Override
     public Collection<Task> findByDone() {
-        Session session = taskStore.getSf().openSession();
+        Session session = sf.openSession();
         List<Task> res = session.createQuery("from Task where done = true", Task.class).list();
         session.close();
         return res;
