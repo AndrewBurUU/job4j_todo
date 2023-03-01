@@ -88,9 +88,9 @@ class HbmTaskServiceTest {
         var task2 = new Task(2, "task2", creationDate, true);
         var task3 = new Task(3, "task3", creationDate.minusDays(1), false);
         var taskList = List.of(task1, task2);
-        when(taskRepository.findNew()).thenReturn(taskList);
+        when(taskRepository.findNewOrDone(false)).thenReturn(taskList);
 
-        var result = hbmTaskService.findNew();
+        var result = hbmTaskService.findNewOrDone(false);
         assertThat(result).isEqualTo(taskList);
     }
 
@@ -101,9 +101,9 @@ class HbmTaskServiceTest {
         var task2 = new Task(2, "task2", creationDate, true);
         var task3 = new Task(3, "task3", creationDate.minusDays(1), false);
         var taskList = List.of(task1, task2);
-        when(taskRepository.findByDone()).thenReturn(taskList);
+        when(taskRepository.findNewOrDone(true)).thenReturn(taskList);
 
-        var result = hbmTaskService.findByDone();
+        var result = hbmTaskService.findNewOrDone(true);
         assertThat(result).isEqualTo(taskList);
     }
 

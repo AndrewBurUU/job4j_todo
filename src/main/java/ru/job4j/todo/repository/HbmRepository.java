@@ -4,7 +4,6 @@ import org.hibernate.*;
 
 import org.springframework.stereotype.*;
 import ru.job4j.todo.model.*;
-import ru.job4j.todo.repository.store.*;
 
 import java.util.*;
 
@@ -97,19 +96,15 @@ public class HbmRepository implements TaskRepository {
     }
 
     @Override
-    public Collection<Task> findNew() {
+    public Collection<Task> findNewOrDone(boolean done) {
         Session session = sf.openSession();
-        List<Task> res = session.createQuery("from Task where created >= CURRENT_DATE", Task.class).list();
+        List<Task> res;
+        if (done) {
+            res = session.createQuery("from Task where done = true", Task.class).list();
+        } else {
+            res = session.createQuery("from Task where created >= CURRENT_DATE", Task.class).list();
+        }
         session.close();
         return res;
     }
-
-    @Override
-    public Collection<Task> findByDone() {
-        Session session = sf.openSession();
-        List<Task> res = session.createQuery("from Task where done = true", Task.class).list();
-        session.close();
-        return res;
-    }
-
 }

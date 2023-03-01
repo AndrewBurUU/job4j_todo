@@ -46,7 +46,7 @@ class TaskControllerTest {
         var task1 = new Task(1, "task1", creationDate, true);
         var task2 = new Task(2, "task2", creationDate, true);
         var task3 = new Task(3, "task3", creationDate, false);
-        var result = taskService.findByDone();
+        var result = taskService.findNewOrDone(true);
         when(result).thenReturn(List.of(task1, task2));
 
         var model = new ConcurrentModel();
@@ -61,7 +61,7 @@ class TaskControllerTest {
         var task1 = new Task(1, "task1", creationDate, true);
         var task2 = new Task(2, "task2", creationDate, true);
         var task3 = new Task(3, "task3", creationDate.minusDays(1), false);
-        var result = taskService.findNew();
+        var result = taskService.findNewOrDone(false);
         when(result).thenReturn(List.of(task1, task2));
 
         var model = new ConcurrentModel();

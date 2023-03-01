@@ -24,13 +24,13 @@ public class TaskController {
 
     @GetMapping("/done")
     public String getByDone(Model model) {
-        model.addAttribute("tasks", taskService.findByDone());
+        model.addAttribute("tasks", taskService.findNewOrDone(true));
         return "tasks/done";
     }
 
     @GetMapping("/new")
     public String getNew(Model model) {
-        model.addAttribute("tasks", taskService.findNew());
+        model.addAttribute("tasks", taskService.findNewOrDone(false));
         return "tasks/new";
     }
 

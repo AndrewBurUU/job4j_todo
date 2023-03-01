@@ -41,13 +41,8 @@ public class HbmTaskService implements TaskService {
     }
 
     @Override
-    public Collection<Task> findNew() {
-        return taskRepository.findNew();
-    }
-
-    @Override
-    public Collection<Task> findByDone() {
-        return taskRepository.findByDone();
+    public Collection<Task> findNewOrDone(boolean done) {
+        return taskRepository.findNewOrDone(done);
     }
 
     @Override

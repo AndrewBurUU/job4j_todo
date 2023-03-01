@@ -16,9 +16,7 @@ public interface TaskService {
 
     Collection<Task> findAll();
 
-    Collection<Task> findNew();
-
-    Collection<Task> findByDone();
+    Collection<Task> findNewOrDone(boolean done);
 
     boolean doneById(int id);
 
