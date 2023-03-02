@@ -21,7 +21,7 @@
                     <a class="nav-item nav-link active" href="/">Главная</a>
                     <a class="nav-item nav-link" th:href="@{/tasks/all}">Все задания</a>
                     <a class="nav-item nav-link" th:href="@{/tasks/done}">Выполненные</a>
-                    <a class="nav-item nav-link" th:href="@{/tasks/new}">Новые</a>
+                    <a class="nav-item nav-link" th:href="@{/tasks/new}">Новые (не выполненные)</a>
                 </div>
                 <div class="d-flex" th:if="${user.name == 'Гость'}">
                     <a class="nav-link text-secondary me-3" th:href="@{/users/register}">Регистрация</a>
@@ -39,7 +39,7 @@
         <ul>
             <li><a th:href="@{/tasks/all}">Все задания</a></li>
             <li><a th:href="@{/tasks/done}">Выполненные</a></li>
-            <li><a th:href="@{/tasks/new}">Новые</a></li>
+            <li><a th:href="@{/tasks/new}">Новые (не выполненные)</a></li>
         </ul>
     </div>
 </div>
