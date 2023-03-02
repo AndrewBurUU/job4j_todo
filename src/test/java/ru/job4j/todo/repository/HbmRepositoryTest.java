@@ -28,6 +28,11 @@ public class HbmRepositoryTest {
                 .buildMetadata().buildSessionFactory();
 
         hbmRepository = new HbmRepository(sf);
+
+        var tasks = hbmRepository.findAll();
+        for (var task  : tasks) {
+            hbmRepository.deleteById(task.getId());
+        }
     }
 
     @AfterEach
