@@ -98,12 +98,9 @@ public class HbmRepository implements TaskRepository {
     @Override
     public Collection<Task> findNewOrDone(boolean done) {
         Session session = sf.openSession();
-        List<Task> res;
-        if (done) {
-            res = session.createQuery("from Task where done = true", Task.class).list();
-        } else {
-            res = session.createQuery("from Task where created >= CURRENT_DATE", Task.class).list();
-        }
+        var res = session.createQuery("from Task where done = :fDone", Task.class)
+                .setParameter("fDone", done)
+                .list();
         session.close();
         return res;
     }
