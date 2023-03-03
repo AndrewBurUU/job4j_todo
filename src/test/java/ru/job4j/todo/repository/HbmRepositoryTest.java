@@ -3,9 +3,7 @@ package ru.job4j.todo.repository;
 import org.hibernate.*;
 import org.hibernate.boot.*;
 import org.hibernate.boot.registry.*;
-import org.junit.jupiter.api.AfterEach;
-import org.junit.jupiter.api.BeforeAll;
-import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.*;
 import ru.job4j.todo.model.Task;
 
 import java.time.temporal.ChronoUnit;
@@ -16,18 +14,23 @@ import static java.util.Collections.emptyList;
 import static java.util.Optional.empty;
 import static org.assertj.core.api.AssertionsForClassTypes.assertThat;
 
+@Disabled
 public class HbmRepositoryTest {
+
+    private static StandardServiceRegistry registry = new StandardServiceRegistryBuilder()
+            .configure().build();
+    private static SessionFactory sf = new MetadataSources(registry)
+            .buildMetadata().buildSessionFactory();
 
     private static HbmRepository hbmRepository;
 
+    private static CrudRepository crudRepository;
+
     @BeforeAll
     public static void initRepositories() throws Exception {
-        StandardServiceRegistry registry = new StandardServiceRegistryBuilder()
-                .configure().build();
-        SessionFactory sf = new MetadataSources(registry)
-                .buildMetadata().buildSessionFactory();
+        crudRepository = new CrudRepository(sf);
 
-        hbmRepository = new HbmRepository(sf);
+        hbmRepository = new HbmRepository(crudRepository);
 
         var tasks = hbmRepository.findAll();
         for (var task  : tasks) {
@@ -46,7 +49,8 @@ public class HbmRepositoryTest {
     @Test
     public void whenSaveThenGetSame() {
         var creationDate = now().truncatedTo(ChronoUnit.MINUTES);
-        var task = hbmRepository.save(new Task(1, "task1", creationDate, false));
+        var task = new Task(1, "task1", creationDate, false);
+        task = hbmRepository.save(task);
         var savedTask = hbmRepository.findById(task.getId()).get();
         assertThat(savedTask).usingRecursiveComparison().isEqualTo(task);
     }

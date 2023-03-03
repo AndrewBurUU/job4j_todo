@@ -1,6 +1,6 @@
 package ru.job4j.todo.repository;
 
-import org.hibernate.*;
+import lombok.AllArgsConstructor;
 
 import org.springframework.stereotype.*;
 import ru.job4j.todo.model.*;
@@ -8,73 +8,39 @@ import ru.job4j.todo.model.*;
 import java.util.*;
 
 @Repository
+@AllArgsConstructor
 public class HbmUserRepository implements UserRepository{
 
-    private final SessionFactory sf;
-
-    public HbmUserRepository(SessionFactory sf) {
-        this.sf = sf;
-    }
+    private final CrudRepository crudRepository;
 
     @Override
     public Optional<User> save(User user) {
-        Session session = sf.openSession();
-        Optional<User> res = Optional.empty();
-        try {
-            session.beginTransaction();
-            session.save(user);
-            session.getTransaction().commit();
-            res = Optional.of(user);
-        } catch (Exception e) {
-            session.getTransaction().rollback();
-        }
-        session.close();
-        return res;
+        crudRepository.run(session -> session.persist(user));
+        return Optional.of(user);
     }
 
     @Override
     public boolean deleteById(int id) {
-        Session session = sf.openSession();
-        int count = 0;
-        try {
-            session.beginTransaction();
-            count = session.createQuery("DELETE User WHERE id = :fId")
-                    .setParameter("fId", id)
-                    .executeUpdate();
-            session.getTransaction().commit();
-        } catch (Exception e) {
-            session.getTransaction().rollback();
-        }
-        session.close();
-        return count > 0;
+        return crudRepository.run("DELETE User WHERE id = :fId",
+                Map.of("fId", id)) > 0;
     }
 
     @Override
     public Optional<User> findByLoginAndPassword(String login, String password) {
-        Session session = sf.openSession();
-        Optional<User> user = session.createQuery("from User where login = :fLogin and password = :fPassword", User.class)
-                .setParameter("fLogin", login)
-                .setParameter("fPassword", password)
-                .uniqueResultOptional();
-        session.close();
-        return user;
+        return crudRepository.optional("from User where login = :fLogin and password = :fPassword", User.class,
+                Map.of("fLogin", login, "fPassword", password)
+                );
     }
 
     @Override
     public Optional<User> findById(int id) {
-        Session session = sf.openSession();
-        Optional<User> user = session.createQuery("from User where id = :fId", User.class)
-                .setParameter("fId", id)
-                .uniqueResultOptional();
-        session.close();
-        return user;
+        return crudRepository.optional("from User where id = :fId", User.class,
+                Map.of("fId", id)
+        );
     }
 
     @Override
     public Collection<User> findAll() {
-        Session session = sf.openSession();
-        List<User> res = session.createQuery("from User", User.class).list();
-        session.close();
-        return res;
+        return crudRepository.query("from User", User.class);
     }
 }
