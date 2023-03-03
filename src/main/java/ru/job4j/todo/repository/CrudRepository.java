@@ -1,8 +1,7 @@
 package ru.job4j.todo.repository;
 
 import lombok.AllArgsConstructor;
-import org.hibernate.Session;
-import org.hibernate.SessionFactory;
+import org.hibernate.*;
 import org.springframework.stereotype.*;
 
 import java.util.List;
@@ -84,6 +83,9 @@ public class CrudRepository {
                 tx.rollback();
             }
             throw e;
+        } finally {
+            session.close();
         }
     }
+
 }
