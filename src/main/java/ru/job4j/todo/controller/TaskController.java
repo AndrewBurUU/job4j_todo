@@ -6,6 +6,8 @@ import org.springframework.web.bind.annotation.*;
 import ru.job4j.todo.model.*;
 import ru.job4j.todo.service.*;
 
+import javax.servlet.http.*;
+
 @Controller
 @RequestMapping("/tasks")
 public class TaskController {
@@ -40,7 +42,8 @@ public class TaskController {
     }
 
     @PostMapping("/create")
-    public String create(@ModelAttribute Task task, @ModelAttribute User user, Model model) {
+    public String create(@ModelAttribute Task task, Model model, HttpSession session) {
+        var user = (User) session.getAttribute("user");
         task.setUser(user);
         try {
             taskService.save(task);

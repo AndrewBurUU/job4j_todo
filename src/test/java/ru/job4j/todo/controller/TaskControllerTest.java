@@ -5,6 +5,7 @@ import org.springframework.ui.*;
 import ru.job4j.todo.model.*;
 import ru.job4j.todo.service.*;
 
+import javax.servlet.http.*;
 import java.time.temporal.*;
 import java.util.*;
 
@@ -19,9 +20,12 @@ class TaskControllerTest {
 
     private TaskController taskController;
 
+    private HttpSession session;
+
     @BeforeEach
     public void initServices() {
         taskService = mock(TaskService.class);
+        session = mock(HttpSession.class);
         taskController = new TaskController(taskService);
     }
 
@@ -87,7 +91,7 @@ class TaskControllerTest {
         when(result).thenReturn(task);
 
         var model = new ConcurrentModel();
-        var view = taskController.create(task, user, model);
+        var view = taskController.create(task, model, session);
 
         assertThat(view).isEqualTo("redirect:/tasks/all");
     }
