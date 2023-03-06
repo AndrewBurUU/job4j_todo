@@ -40,7 +40,8 @@ public class TaskController {
     }
 
     @PostMapping("/create")
-    public String create(@ModelAttribute Task task, Model model) {
+    public String create(@ModelAttribute Task task, @ModelAttribute User user, Model model) {
+        task.setUser(user);
         try {
             taskService.save(task);
             return "redirect:/tasks/all";
