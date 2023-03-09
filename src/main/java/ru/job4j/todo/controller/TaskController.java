@@ -1,5 +1,6 @@
 package ru.job4j.todo.controller;
 
+import lombok.*;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.*;
 import org.springframework.web.bind.annotation.*;
@@ -10,13 +11,12 @@ import javax.servlet.http.*;
 
 @Controller
 @RequestMapping("/tasks")
+@AllArgsConstructor
 public class TaskController {
 
     private final TaskService taskService;
 
-    public TaskController(TaskService taskService) {
-        this.taskService = taskService;
-    }
+    private final PriorityService priorityService;
 
     @GetMapping("/all")
     public String getAll(Model model) {
@@ -38,6 +38,7 @@ public class TaskController {
 
     @GetMapping("/create")
     public String getCreationPage(Model model) {
+        model.addAttribute("priorities", priorityService.findAll());
         return "tasks/create";
     }
 
@@ -82,6 +83,7 @@ public class TaskController {
             model.addAttribute("message", "Задание с указанным идентификатором не найдено");
             return "errors/404";
         }
+        model.addAttribute("priorities", priorityService.findAll());
         model.addAttribute("task", taskOptional.get());
         return "tasks/one";
     }
@@ -97,8 +99,10 @@ public class TaskController {
     }
 
     @PostMapping("/update")
-    public String update(@ModelAttribute Task task, Model model) {
+    public String update(@ModelAttribute Task task, Model model, HttpSession session) {
         try {
+            var user = (User) session.getAttribute("user");
+            task.setUser(user);
             var isUpdated = taskService.update(task);
             if (!isUpdated) {
                 model.addAttribute("message", "Задание с указанным идентификатором не найдено");
