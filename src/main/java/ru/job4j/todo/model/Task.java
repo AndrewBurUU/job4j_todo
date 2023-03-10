@@ -4,6 +4,7 @@ import lombok.*;
 import lombok.EqualsAndHashCode.Include;
 import javax.persistence.*;
 import java.time.*;
+import java.util.*;
 
 @Data
 @AllArgsConstructor
@@ -31,4 +32,12 @@ public class Task {
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "priority_id")
     private Priority priority;
+
+    @ManyToMany
+    @JoinTable(
+            name = "task_categories",
+            joinColumns = { @JoinColumn(name = "task_id") },
+            inverseJoinColumns = { @JoinColumn(name = "category_id") }
+    )
+    private List<TaskCategory> taskCategories = new ArrayList<>();
 }

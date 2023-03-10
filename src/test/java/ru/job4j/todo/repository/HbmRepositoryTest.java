@@ -49,7 +49,7 @@ public class HbmRepositoryTest {
     @Test
     public void whenSaveThenGetSame() {
         var creationDate = now().truncatedTo(ChronoUnit.MINUTES);
-        var task = new Task(1, "task1", creationDate, true, new User(), new Priority());
+        var task = new Task(1, "task1", creationDate, true, new User(), new Priority(), List.of());
         task = hbmRepository.save(task);
         var savedTask = hbmRepository.findById(task.getId()).get();
         assertThat(savedTask).usingRecursiveComparison().isEqualTo(task);
@@ -58,9 +58,9 @@ public class HbmRepositoryTest {
     @Test
     public void whenSeveralThenGetAll() {
         var creationDate = now().truncatedTo(ChronoUnit.MINUTES);
-        var task1 = hbmRepository.save(new Task(1, "task1", creationDate, true, new User(), new Priority()));
-        var task2 = hbmRepository.save(new Task(2, "task2", creationDate, true, new User(), new Priority()));
-        var task3 = hbmRepository.save(new Task(3, "task3", creationDate, true, new User(), new Priority()));
+        var task1 = hbmRepository.save(new Task(1, "task1", creationDate, true, new User(), new Priority(), List.of()));
+        var task2 = hbmRepository.save(new Task(2, "task2", creationDate, true, new User(), new Priority(), List.of()));
+        var task3 = hbmRepository.save(new Task(3, "task3", creationDate, true, new User(), new Priority(), List.of()));
         var result = hbmRepository.findAll();
         assertThat(result).isEqualTo(List.of(task1, task2, task3));
     }
@@ -74,7 +74,7 @@ public class HbmRepositoryTest {
     @Test
     public void whenDeleteThenGetEmptyOptional() {
         var creationDate = now().truncatedTo(ChronoUnit.MINUTES);
-        var task = hbmRepository.save(new Task(1, "task1", creationDate, true, new User(), new Priority()));
+        var task = hbmRepository.save(new Task(1, "task1", creationDate, true, new User(), new Priority(), List.of()));
         var isDeleted = hbmRepository.deleteById(task.getId());
         var savedTask = hbmRepository.findById(task.getId());
         assertThat(isDeleted).isTrue();
@@ -89,8 +89,8 @@ public class HbmRepositoryTest {
     @Test
     public void whenUpdateThenGetUpdated() {
         var creationDate = now().truncatedTo(ChronoUnit.MINUTES);
-        var task = hbmRepository.save(new Task(1, "task1", creationDate, true, new User(), new Priority()));
-        var updatedTask = new Task(task.getId(), "task1updated", creationDate.plusDays(1), true, new User(), new Priority());
+        var task = hbmRepository.save(new Task(1, "task1", creationDate, true, new User(), new Priority(), List.of()));
+        var updatedTask = new Task(task.getId(), "task1updated", creationDate.plusDays(1), true, new User(), new Priority(), List.of());
         var isUpdated = hbmRepository.update(updatedTask);
         var savedTask = hbmRepository.findById(updatedTask.getId()).get();
         assertThat(isUpdated).isTrue();
@@ -100,8 +100,8 @@ public class HbmRepositoryTest {
     @Test
     public void whenUpdateUnExistingTaskThenGetFalse() {
         var creationDate = now().truncatedTo(ChronoUnit.MINUTES);
-        var task = hbmRepository.save(new Task(1, "task1", creationDate, true, new User(), new Priority()));
-        var isUpdated = hbmRepository.update(new Task(2, "task2", creationDate, true, new User(), new Priority()));
+        var task = hbmRepository.save(new Task(1, "task1", creationDate, true, new User(), new Priority(), List.of()));
+        var isUpdated = hbmRepository.update(new Task(2, "task2", creationDate, true, new User(), new Priority(), List.of()));
         assertThat(isUpdated).isFalse();
     }
 }
