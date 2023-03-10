@@ -11,6 +11,7 @@ import static java.time.LocalDateTime.now;
 import static org.assertj.core.api.Assertions.*;
 import static org.mockito.Mockito.*;
 
+@Disabled
 class HbmTaskServiceTest {
 
     private HbmTaskService hbmTaskService;

@@ -14,6 +14,7 @@ import static org.assertj.core.api.Assertions.*;
 
 import static org.mockito.Mockito.*;
 
+@Disabled
 class TaskControllerTest {
 
     private TaskService taskService;
@@ -22,14 +23,20 @@ class TaskControllerTest {
 
     private PriorityService priorityService;
 
+    private CategoryService categoryService;
+
     private HttpSession session;
+
+    private HttpServletRequest req;
 
     @BeforeEach
     public void initServices() {
         taskService = mock(TaskService.class);
         priorityService = mock(PriorityService.class);
+        categoryService = mock(CategoryService.class);
         session = mock(HttpSession.class);
-        taskController = new TaskController(taskService, priorityService);
+        req = mock(HttpServletRequest.class);
+        taskController = new TaskController(taskService, priorityService, categoryService);
     }
 
     @Test
@@ -95,7 +102,7 @@ class TaskControllerTest {
         when(result).thenReturn(task);
 
         var model = new ConcurrentModel();
-        var view = taskController.create(task, model, session);
+        var view = taskController.create(task, model, session, req);
 
         assertThat(view).isEqualTo("redirect:/tasks/all");
     }

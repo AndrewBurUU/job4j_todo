@@ -8,6 +8,7 @@ import ru.job4j.todo.model.*;
 import ru.job4j.todo.service.*;
 
 import javax.servlet.http.*;
+import java.util.*;
 
 @Controller
 @RequestMapping("/tasks")
@@ -17,6 +18,8 @@ public class TaskController {
     private final TaskService taskService;
 
     private final PriorityService priorityService;
+
+    private final CategoryService categoryService;
 
     @GetMapping("/all")
     public String getAll(Model model) {
@@ -39,13 +42,22 @@ public class TaskController {
     @GetMapping("/create")
     public String getCreationPage(Model model) {
         model.addAttribute("priorities", priorityService.findAll());
+        model.addAttribute("categories", categoryService.findAll());
         return "tasks/create";
     }
 
     @PostMapping("/create")
-    public String create(@ModelAttribute Task task, Model model, HttpSession session) {
+    public String create(@ModelAttribute Task task, Model model, HttpSession session, HttpServletRequest req) {
         var user = (User) session.getAttribute("user");
         task.setUser(user);
+        String[] cat = req.getParameterValues("selected_categories");
+        ArrayList<Category> categories = new ArrayList<>();
+        for (String s : cat) {
+            Category category = new Category();
+            category.setId(Integer.parseInt(s));
+            categories.add(category);
+        }
+        task.setCategories(categories);
         try {
             taskService.save(task);
             return "redirect:/tasks/all";

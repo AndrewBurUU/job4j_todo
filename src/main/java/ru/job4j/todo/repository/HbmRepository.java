@@ -34,7 +34,7 @@ public class HbmRepository implements TaskRepository {
                 task.isDone(),
                 task.getUser(),
                 task.getPriority(),
-                task.getTaskCategories());
+                task.getCategories());
         crudRepository.run(session -> session.merge(task));
         return taskBefore.equals(task);
     }
