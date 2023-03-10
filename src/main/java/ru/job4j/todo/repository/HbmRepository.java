@@ -27,20 +27,15 @@ public class HbmRepository implements TaskRepository {
 
     @Override
     public boolean update(Task task) {
-        return crudRepository.run("UPDATE Task "
-                + "SET description = :fDescription, "
-                + "created = :fCreated, "
-                + "done = :fDone, "
-                + "user = :fUser, "
-                + "priority = :fPriority "
-                + "WHERE id = :fId",
-                Map.of("fDescription", task.getDescription(),
-                       "fCreated", task.getCreated(),
-                       "fDone", task.isDone(),
-                       "fUser", task.getUser(),
-                       "fPriority", task.getPriority(),
-                       "fId", task.getId())
-        ) > 0;
+        Task taskBefore = new Task(
+                task.getId(),
+                task.getDescription(),
+                task.getCreated(),
+                task.isDone(),
+                task.getUser(),
+                task.getPriority());
+        crudRepository.run(session -> session.merge(task));
+        return taskBefore.equals(task);
     }
 
     @Override
