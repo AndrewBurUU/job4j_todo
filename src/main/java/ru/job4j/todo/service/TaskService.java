@@ -20,4 +20,6 @@ public interface TaskService {
 
     boolean doneById(int id);
 
+    Collection<Task> setUserZone(User user, Collection<Task> tasks);
+
 }

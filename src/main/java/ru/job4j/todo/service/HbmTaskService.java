@@ -4,6 +4,10 @@ import org.springframework.stereotype.*;
 import ru.job4j.todo.model.*;
 import ru.job4j.todo.repository.*;
 
+import java.sql.*;
+import java.text.*;
+import java.time.*;
+import java.time.format.*;
 import java.util.*;
 
 @Service
@@ -53,4 +57,19 @@ public class HbmTaskService implements TaskService {
         taskOptional.get().setDone(true);
         return taskRepository.update(taskOptional.get());
     }
+
+    @Override
+    public Collection<Task> setUserZone(User user, Collection<Task> tasks) {
+        Collection<Task> res = new ArrayList<>();
+        for (Task task : tasks) {
+            var userTimeZone = user.getTimezone();
+            var taskCreated = task.getCreated();
+            var taskWithTimeZone = taskCreated.atZone(ZoneId.of("UTC"));
+            var taskSameInstant = taskWithTimeZone.withZoneSameInstant(ZoneId.of(userTimeZone));
+            task.setCreated(taskSameInstant.toLocalDateTime());
+            res.add(task);
+        }
+        return res;
+    }
+
 }

@@ -49,7 +49,7 @@ class TaskControllerTest {
         when(result).thenReturn(List.of(task1, task2, task3));
 
         var model = new ConcurrentModel();
-        var view = taskController.getAll(model);
+        var view = taskController.getAll(model, session);
 
         assertThat(view).isEqualTo("tasks/all");
     }

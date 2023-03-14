@@ -22,8 +22,11 @@ public class TaskController {
     private final CategoryService categoryService;
 
     @GetMapping("/all")
-    public String getAll(Model model) {
-        model.addAttribute("tasks", taskService.findAll());
+    public String getAll(Model model, HttpSession session) {
+        var user = (User) session.getAttribute("user");
+        var taskAll = taskService.findAll();
+        var tasks = taskService.setUserZone(user, taskAll);
+        model.addAttribute("tasks", tasks);
         return "tasks/all";
     }
 
