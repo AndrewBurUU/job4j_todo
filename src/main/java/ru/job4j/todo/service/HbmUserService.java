@@ -39,4 +39,17 @@ public class HbmUserService implements UserService{
     public Collection<User> findAll() {
         return userRepository.findAll();
     }
+
+    @Override
+    public Collection<String> getTimeZones() {
+        Collection<String> res = new ArrayList<>();
+        var zones = new ArrayList<TimeZone>();
+        for (String timeId : TimeZone.getAvailableIDs()) {
+            zones.add(TimeZone.getTimeZone(timeId));
+        }
+        for (TimeZone zone : zones) {
+            res.add(zone.getDisplayName());
+        }
+        return res;
+    }
 }
