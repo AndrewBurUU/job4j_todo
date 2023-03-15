@@ -16,6 +16,6 @@ public interface UserService {
 
     Collection<User> findAll();
 
-    Collection<String> getTimeZones();
+    Collection<UserTimeZone> getTimeZones();
 
 }

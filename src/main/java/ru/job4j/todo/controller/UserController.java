@@ -4,10 +4,11 @@ import org.springframework.stereotype.*;
 import org.springframework.ui.*;
 import org.springframework.web.bind.annotation.*;
 
-import ru.job4j.todo.model.User;
+import ru.job4j.todo.model.*;
 import ru.job4j.todo.service.*;
 
 import javax.servlet.http.*;
+import java.util.*;
 
 @Controller
 @RequestMapping("/users")
@@ -26,7 +27,8 @@ public class UserController {
     }
 
     @PostMapping("/register")
-    public String register(Model model, @ModelAttribute User user) {
+    public String register(Model model, @ModelAttribute User user, @RequestParam String tz) {
+        user.setTimezone(tz);
         var savedUser = userService.save(user);
         if (savedUser.isEmpty()) {
             model.addAttribute("message", "Ошибка регистрации пользователя");

@@ -50,8 +50,8 @@
             </div>
 
             <div class="mb-3">
-                <label for="timezone"><b>Часовой пояс</b></label>
-                <select class="form-control" id="timezone" name="timezone">
+                <label for="tz"><b>Часовой пояс</b></label>
+                <select class="form-control" id="tz" name="tz">
                     <option th:each="timezone : ${timezones}" th:value="${timezone.name}" th:text="${timezone.name}"></option>
                 </select>
             </div>
