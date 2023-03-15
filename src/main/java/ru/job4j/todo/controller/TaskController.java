@@ -31,14 +31,20 @@ public class TaskController {
     }
 
     @GetMapping("/done")
-    public String getByDone(Model model) {
-        model.addAttribute("tasks", taskService.findNewOrDone(true));
+    public String getByDone(Model model, HttpSession session) {
+        var user = (User) session.getAttribute("user");
+        var taskDone = taskService.findNewOrDone(true);
+        var tasks = taskService.setUserZone(user, taskDone);
+        model.addAttribute("tasks", tasks);
         return "tasks/done";
     }
 
     @GetMapping("/new")
-    public String getNew(Model model) {
-        model.addAttribute("tasks", taskService.findNewOrDone(false));
+    public String getNew(Model model, HttpSession session) {
+        var user = (User) session.getAttribute("user");
+        var taskNew = taskService.findNewOrDone(false);
+        var tasks = taskService.setUserZone(user, taskNew);
+        model.addAttribute("tasks", tasks);
         return "tasks/new";
     }
 

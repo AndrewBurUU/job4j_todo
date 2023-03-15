@@ -64,7 +64,7 @@ class TaskControllerTest {
         when(result).thenReturn(List.of(task1, task2));
 
         var model = new ConcurrentModel();
-        var view = taskController.getByDone(model);
+        var view = taskController.getByDone(model, session);
 
         assertThat(view).isEqualTo("tasks/done");
     }
@@ -79,7 +79,7 @@ class TaskControllerTest {
         when(result).thenReturn(List.of(task1, task2));
 
         var model = new ConcurrentModel();
-        var view = taskController.getNew(model);
+        var view = taskController.getNew(model, session);
 
         assertThat(view).isEqualTo("tasks/new");
     }

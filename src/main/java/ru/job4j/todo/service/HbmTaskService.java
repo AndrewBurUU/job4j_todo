@@ -62,14 +62,20 @@ public class HbmTaskService implements TaskService {
     public Collection<Task> setUserZone(User user, Collection<Task> tasks) {
         Collection<Task> res = new ArrayList<>();
         for (Task task : tasks) {
-            var userTimeZone = user.getTimezone();
-            var taskCreated = task.getCreated();
-            var taskWithTimeZone = taskCreated.atZone(ZoneId.of("UTC"));
-            var taskSameInstant = taskWithTimeZone.withZoneSameInstant(ZoneId.of(userTimeZone));
-            task.setCreated(taskSameInstant.toLocalDateTime());
+            task.setCreated(setSelectedTZ(user, task));
             res.add(task);
         }
         return res;
     }
 
+    public static LocalDateTime setSelectedTZ(User user, Task task) {
+        ZonedDateTime zonedDateTime;
+        if (user.getTimezone() == null) {
+            zonedDateTime = ZonedDateTime.of(task.getCreated(), TimeZone.getDefault().toZoneId());
+        } else {
+            zonedDateTime = ZonedDateTime.of(task.getCreated(),
+            TimeZone.getDefault().toZoneId()).withZoneSameInstant(ZoneId.of(String.valueOf(user.getTimezone())));
+        }
+        return zonedDateTime.toLocalDateTime();
+    }
 }
